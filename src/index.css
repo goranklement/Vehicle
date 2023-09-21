@@ -211,3 +211,38 @@ h3 {
 .p-inputtext {
   margin-bottom: 20px;
 }
+.emptyProfile h3 {
+  color: #9faec9;
+}
+.emptyProfile Button {
+  background-color: #1a3459;
+}
+.ad {
+  width: 350px;
+  height: 350px;
+  border-radius: 20px;
+  box-shadow: 5px 10px rgb(18, 18, 23);
+  background-color: rgb(22, 23, 31);
+}
+.ad img {
+  width: 160px;
+  height: 160px;
+}
+.ad h6 {
+  margin: 10px;
+}
+
+.editDeleteButtons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-evenly;
+}
+.editButton {
+  background-color: #1a3459 !important;
+}
+.deleteButton {
+  background-color: #f5951e !important;
+}
+.saveButton {
+  background-color: #083b2d !important;
+}

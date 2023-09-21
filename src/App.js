@@ -7,6 +7,11 @@ import Register from "./components/Register";
 import React from "react";
 
 import "primeicons/primeicons.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+
+import "primereact/resources/primereact.min.css";
+
+import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 
 import Navbar from "./components/Navbar";
 
@@ -16,14 +21,16 @@ function App() {
       <header className="App-header">
         <BrowserRouter>
           <React.Fragment>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Profile />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Routes>
+            <PrimeReactProvider>
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Profile />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Routes>
+            </PrimeReactProvider>
           </React.Fragment>
         </BrowserRouter>
       </header>

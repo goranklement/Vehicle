@@ -4,7 +4,8 @@ import { Button } from "primereact/button";
 
 const AdModel = (props) => {
   const [isEdited, setIsEdited] = useState(false);
-  const [value, setValue] = useState("PEŽO");
+  const [value, setValue] = useState(props.vehicle);
+  const handleSave = () => {};
   return isEdited ? (
     <div className="ad">
       <input
@@ -24,6 +25,7 @@ const AdModel = (props) => {
           iconPos="right"
         />
         <Button
+          onClick={handleSave}
           className="saveButton"
           label="Save"
           icon="pi pi-check"

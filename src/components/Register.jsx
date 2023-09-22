@@ -53,7 +53,7 @@ const Register = () => {
       showError("Passwords not matching!");
     } else {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/login");
+      navigate("/profile");
     }
   };
   return (

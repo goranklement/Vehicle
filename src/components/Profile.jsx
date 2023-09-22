@@ -11,35 +11,46 @@ import { auth } from "./FirebaseConfig";
 import makeModelStore from "../common/MakeModelStore";
 const Profile = () => {
   const [first, setFirst] = useState(0);
-  const [isShown, setIsShow] = useState(false);
+  const [isShown, setIsShown] = useState(false);
   const [rows, setRows] = useState(3);
   const user = auth.currentUser;
   useEffect(() => {
     makeModelStore.getMakes();
     makeModelStore.getModels();
+    vehicleStore.getFromDatabase();
   }, []);
 
   const onPageChange = (event) => {
     setFirst(event.first);
     setRows(event.rows);
   };
+
+  const toggleIsShown = () => {
+    setIsShown(!isShown);
+  };
   return useObserver(() => (
     <>
       <div>
         <div className="adContainer">
-          {vehicleStore.vehicles.length === 0 ? (
-            <h5>You don't have any active ads</h5>
-          ) : (
+          {user ? (
             <>
               {vehicleStore.vehicles
+                .filter((vehicle) => vehicle.uid === user.uid)
                 .slice(first, first + rows)
                 .map((vehicle) => (
                   <AdModel key={vehicle.id} vehicle={vehicle} />
                 ))}
             </>
+          ) : (
+            <h5>Loading...</h5>
           )}
         </div>
-        {vehicleStore.vehicles && vehicleStore.vehicles.length > 0 && (
+        {console.log(
+          vehicleStore.vehicles.filter((vehicle) => vehicle.uid === user.uid)
+        )}
+
+        {vehicleStore.vehicles.filter((vehicle) => vehicle.uid === user.uid)
+          .length > 0 ? (
           <Paginator
             className="paginator"
             first={first}
@@ -52,10 +63,12 @@ const Profile = () => {
             rowsPerPageOptions={[3, 6, 9]}
             onPageChange={onPageChange}
           />
+        ) : (
+          <h5>You don't have any ads</h5>
         )}
 
         <Button
-          onClick={() => setIsShow(!isShown)}
+          onClick={() => setIsShown(!isShown)}
           label={isShown ? "Cancel" : "Add new add"}
           icon={isShown ? "pi pi-times" : "pi pi-check"}
           iconPos="right"
@@ -67,6 +80,7 @@ const Profile = () => {
           <AddVehicle
             models={makeModelStore.models}
             makes={makeModelStore.makes}
+            toggleIsShown={toggleIsShown}
           />
         )}
       </div>

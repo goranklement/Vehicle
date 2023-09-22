@@ -5,6 +5,7 @@ import { InputText } from "primereact/inputtext";
 import axios from "axios";
 import { auth } from "./FirebaseConfig";
 import { Button } from "primereact/button";
+import vehicleStore from "../common/VehicleStore";
 import qs from "qs";
 import { InputNumber } from "primereact/inputnumber";
 
@@ -34,9 +35,8 @@ const AddVehicle = (props) => {
 
         const token = response.data.access_token;
         setBearer(token);
-        // Rest of your code using myToken
+        console.log(token);
       } catch (error) {
-        // Handle errors here
         console.error("Error fetching token:", error);
       }
     };
@@ -54,13 +54,12 @@ const AddVehicle = (props) => {
 
     const urlVehicle =
       "https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/";
-    //const user = auth.currentUser;
-    // console.log(user);
+    const user = auth.currentUser;
 
     const data = {
       make: selectedMake.name,
       model: selectedModel.name,
-      uid: "1212",
+      uid: user.uid,
       kilometers: kilometersPassed,
       price: vehicleValue,
       img: imgUrl,
@@ -74,6 +73,8 @@ const AddVehicle = (props) => {
       },
     });
 
+    vehicleStore.getFromDatabase();
+    props.toggleIsShown();
     console.log(response);
   };
 
@@ -160,7 +161,9 @@ const AddVehicle = (props) => {
             placeholder="Image URL"
           />
         </div>
-        <button type="sumbit">KLIKNI</button>
+        <button className="buttonAdd" type="sumbit">
+          Add new vehicle
+        </button>
       </form>
     </div>
   );

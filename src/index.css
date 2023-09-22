@@ -327,3 +327,15 @@ h5 {
   font-weight: bold;
   height: 30px;
 }
+.p-toast {
+  margin-top: 150px !important;
+}
+.adsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.selection {
+  margin-top: 130px;
+  margin-bottom: 10px;
+}

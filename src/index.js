@@ -9,7 +9,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthProvider>
     <App />
-    {console.log("INDEX")}
   </AuthProvider>
 );
 reportWebVitals();

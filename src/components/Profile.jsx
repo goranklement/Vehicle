@@ -45,9 +45,6 @@ const Profile = () => {
             <h5>Loading...</h5>
           )}
         </div>
-        {console.log(
-          vehicleStore.vehicles.filter((vehicle) => vehicle.uid === user.uid)
-        )}
 
         {vehicleStore.vehicles.filter((vehicle) => vehicle.uid === user.uid)
           .length > 0 ? (

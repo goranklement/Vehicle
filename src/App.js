@@ -20,7 +20,6 @@ import Navbar from "./components/Navbar";
 
 function App() {
   const { isAuthenticated } = useContext(AuthContext);
-  console.log(isAuthenticated);
   return (
     <div className="App">
       <header className="App-header">

@@ -15,7 +15,8 @@ class MakeModelStore {
   }
 
   async getModels() {
-    const url = "https://api.baasic.com/beta/vehiclegkl/resources/VehicleModel";
+    const url =
+      "https://api.baasic.com/beta/vehiclegkl/resources/VehicleModel?rpp=500";
     try {
       const response = await axios.get(url, {
         headers: {
@@ -30,7 +31,8 @@ class MakeModelStore {
   }
 
   async getMakes() {
-    const url = "https://api.baasic.com/beta/vehiclegkl/resources/VehicleMake";
+    const url =
+      "https://api.baasic.com/beta/vehiclegkl/resources/VehicleMake?rpp=500";
     try {
       const response = await axios.get(url, {
         headers: {

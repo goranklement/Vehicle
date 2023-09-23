@@ -9,7 +9,6 @@ const Navbar = () => {
     auth
       .signOut()
       .then(() => {
-        console.log("User logged out.");
         logout();
       })
       .catch((error) => {

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import qs from "qs";
 import vehicleStore from "../common/VehicleStore";
+import { auth } from "./FirebaseConfig";
 
 const AdModel = (props) => {
   const [isEdited, setIsEdited] = useState(false);
@@ -12,6 +13,7 @@ const AdModel = (props) => {
   const [kilometers, setKilometers] = useState(props.vehicle.kilometers);
   const [price, setPrice] = useState(props.vehicle.price);
   const [bearer, setBearer] = useState(null);
+  const user = auth.currentUser;
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -32,7 +34,6 @@ const AdModel = (props) => {
 
         const token = response.data.access_token;
         setBearer(token);
-        console.log(bearer);
       } catch (error) {
         console.error("Error fetching token:", error);
       }
@@ -50,8 +51,8 @@ const AdModel = (props) => {
       kilometers: kilometers,
       price: price,
       img: img,
+      email: user.email,
     };
-    console.log(updateData);
     const urlUpdate = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/${props.vehicle.id}/`;
     try {
       const response = await axios.put(urlUpdate, updateData, {

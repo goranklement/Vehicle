@@ -23,7 +23,8 @@ class VehicleStore {
 
   async getFromDatabase() {
     this.removeAll();
-    const url = "https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/";
+    const url =
+      "https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?rpp=500";
     const response = await axios.get(url, {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +32,6 @@ class VehicleStore {
     });
 
     response.data.item.map((item) => this.addVehicle(item));
-    console.log(this.vehicles);
   }
 
   removeAll() {

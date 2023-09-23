@@ -105,6 +105,12 @@ h3 {
   padding-top: 44px;
   margin-top: 0;
 }
+.loginForm .p-inputtext {
+  margin: 15px !important;
+}
+.loginForm .pi-eye {
+  right: 30px !important;
+}
 .loginregister button {
   margin-top: 50px;
   border: 1px solid #ff5722;
@@ -147,8 +153,6 @@ h3 {
   line-height: 17px;
   letter-spacing: 0px;
   text-align: left;
-}
-.loginregister span {
 }
 .register {
   background-color: #ecedf5;
@@ -199,6 +203,14 @@ h3 {
   height: 450px;
   margin-top: 90px;
 }
+.registerForm input {
+  margin: 15px;
+}
+.registerForm .pi-eye,
+.pi-eye-slash {
+  right: 30px !important;
+}
+
 .buttons {
   color: #fff;
   font-family: Nunito Sans;
@@ -269,7 +281,7 @@ h5 {
   margin: auto;
   border-radius: 10px;
   width: 500px;
-  height: 600px;
+  height: 650px;
   background-color: #1a3459;
   margin-bottom: 20px;
   color: #16171f;
@@ -342,4 +354,28 @@ h5 {
 
 .p-float-label {
   margin: 15px;
+  font-weight: bold !important;
+  font-size: 14px !important;
+}
+.p-inputnumber-input {
+  width: 130px !important;
+  margin: 10px !important;
+}
+.p-float-label label {
+  left: 50px !important;
+}
+.minMax {
+  display: flex;
+}
+.minMaxKilometers {
+  background-color: #181846;
+  padding-top: 20px;
+  border-radius: 25px;
+  margin: 10px;
+}
+.minMaxPrice {
+  background-color: #0d291c !important;
+  padding-top: 20px;
+  margin: 10px;
+  border-radius: 25px;
 }

@@ -69,31 +69,35 @@ const Register = () => {
             placeholder="Email"
           />
           <br />
+          <span className="p-input-icon-right">
+            <InputText
+              type={isPasswordVisible ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              className="passwordInput"
+            />
+            <i
+              className={isPasswordVisible ? "pi pi-eye-slash" : "pi pi-eye"}
+              onClick={togglePassword}
+            />
+          </span>
 
-          <InputText
-            type={isPasswordVisible ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={handlePasswordChange}
-            className="passwordInput"
-          />
-          <i
-            className={isPasswordVisible ? "pi pi-eye-slash" : "pi pi-eye"}
-            onClick={togglePassword}
-          />
           <br />
+          <span className="p-input-icon-right">
+            <InputText
+              type={isRepPasswordVisible ? "text" : "password"}
+              placeholder="Repeat password"
+              value={repeatedPassword}
+              onChange={handleRepPasswordChange}
+              className="passwordInput"
+            />
+            <i
+              className={isRepPasswordVisible ? "pi pi-eye-slash" : "pi pi-eye"}
+              onClick={toggleRepPassword}
+            />
+          </span>
 
-          <InputText
-            type={isRepPasswordVisible ? "text" : "password"}
-            placeholder="Repeat password"
-            value={repeatedPassword}
-            onChange={handleRepPasswordChange}
-            className="passwordInput"
-          />
-          <i
-            className={isRepPasswordVisible ? "pi pi-eye-slash" : "pi pi-eye"}
-            onClick={toggleRepPassword}
-          />
           <br />
 
           <button type="submit">Register</button>

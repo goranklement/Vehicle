@@ -53,9 +53,9 @@ const Profile = () => {
             first={first}
             rows={rows}
             totalRecords={
-              vehicleStore.vehicles !== undefined
-                ? vehicleStore.vehicles.length
-                : 0
+              vehicleStore.vehicles.filter(
+                (vehicle) => vehicle.uid === user.uid
+              ).length
             }
             rowsPerPageOptions={[3, 6, 9]}
             onPageChange={onPageChange}
@@ -66,7 +66,7 @@ const Profile = () => {
 
         <Button
           onClick={() => setIsShown(!isShown)}
-          label={isShown ? "Cancel" : "Add new add"}
+          label={isShown ? "Cancel" : "Add new vehicle"}
           icon={isShown ? "pi pi-times" : "pi pi-check"}
           iconPos="right"
           style={{ backgroundColor: isShown ? "#691009" : "#1a3459" }}

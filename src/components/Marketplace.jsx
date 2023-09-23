@@ -1,22 +1,43 @@
-import vehicleStore from "../common/VehicleStore";
-import { auth } from "./FirebaseConfig";
 import { Dropdown } from "primereact/dropdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { useRef } from "react";
 import axios from "axios";
-
+import { Paginator } from "primereact/paginator";
 import Ad from "./Ad";
+import makeModelStore from "../common/MakeModelStore";
+import vehicleStore from "../common/VehicleStore";
+import { auth } from "./FirebaseConfig";
+
 const Marketplace = () => {
   const user = auth.currentUser;
   const toast = useRef(null);
   const [selectedOption, setSelectedOption] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [sortedResult, setSortedResult] = useState([""]);
-  const options = [{ option: "make" }, { option: "model" }];
+  const [isFilterPressed, setIsFilterPressed] = useState(false);
+  const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [first, setFirst] = useState(0);
+  const [rows, setRows] = useState(3);
+  const options = makeModelStore.makes.map((make) => ({
+    name: make.name,
+    id: make.id,
+  }));
+  const onPageChange = (event) => {
+    setFirst(event.first);
+    setRows(event.rows);
+  };
 
-  const types = [{ type: "asc" }, { type: "desc" }];
+  useEffect(() => {
+    Promise.all([makeModelStore.getMakes(), vehicleStore.getFromDatabase()])
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      });
+  }, []);
 
   const showInfo = (message) => {
     toast.current.show({
@@ -26,9 +47,11 @@ const Marketplace = () => {
       life: 3000,
     });
   };
-  const sortVehicles = async () => {
-    if (selectedOption !== "" && selectedType !== "") {
-      const sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?sort=${selectedOption.option}|${selectedType.type}`;
+
+  const filterVehicles = async () => {
+    if (selectedOption !== "") {
+      console.log(selectedOption);
+      const sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=${selectedOption.name}`;
 
       console.log(sortURL);
       try {
@@ -37,12 +60,15 @@ const Marketplace = () => {
             "Content-Type": "application/json",
           },
         });
-        setSortedResult(response.data.item);
+
+        setFilteredVehicles(response.data.item);
+
+        setIsFilterPressed(!isFilterPressed);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     } else {
-      showInfo("You have to select sort by and order!");
+      showInfo("You have to select filter first!");
     }
   };
 
@@ -50,33 +76,59 @@ const Marketplace = () => {
     <>
       <Toast ref={toast} />
       <div className="selection">
-        <Dropdown
-          value={selectedOption}
-          onChange={(e) => setSelectedOption(e.value)}
-          options={options}
-          optionLabel="option"
-          placeholder="Sort by"
-          className="w-full md:w-14rem"
-        />
-        <Dropdown
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.value)}
-          options={types}
-          optionLabel="type"
-          placeholder="Select a sorting option"
-          className="w-full md:w-14rem"
-        />
-        <Button onClick={sortVehicles} label="Sort" />
-      </div>
+        <div>
+          <Dropdown
+            value={selectedOption}
+            onChange={(e) => setSelectedOption(e.value)}
+            options={options}
+            optionLabel="name"
+            placeholder="Filter: "
+            className="w-full md:w-14rem"
+          />
 
-      <div className="adsContainer">
-        {sortedResult
-          .filter((vehicle) => vehicle.uid !== user.uid)
-          .map((vehicle) => (
-            <Ad key={vehicle.id} vehicle={vehicle} />
-          ))}
+          <Button
+            onClick={filterVehicles}
+            label={isFilterPressed ? "Show All" : "Filter"}
+          />
+        </div>
       </div>
+      <div className="adsContainer">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            {filteredVehicles.length === 0 && isFilterPressed && (
+              <h5>No vehicles matched the filter</h5>
+            )}
+            {isFilterPressed
+              ? filteredVehicles
+                  .filter((vehicle) => vehicle.uid !== user.uid)
+                  .slice(first, first + rows)
+                  .map((vehicle) => <Ad key={vehicle.id} vehicle={vehicle} />)
+              : vehicleStore.vehicles
+                  .filter((vehicle) => vehicle.uid !== user.uid)
+                  .slice(first, first + rows)
+                  .map((vehicle) => <Ad key={vehicle.id} vehicle={vehicle} />)}
+          </>
+        )}
+      </div>
+      <Paginator
+        className="paginator"
+        first={first}
+        rows={rows}
+        totalRecords={
+          isFilterPressed
+            ? filteredVehicles.length
+            : vehicleStore.vehicles.filter(
+                (vehicle) => vehicle.uid !== user.uid
+              ).length
+        }
+        rowsPerPageOptions={[3, 6, 9]}
+        onPageChange={onPageChange}
+      />
+      {console.log(filteredVehicles.length)}
     </>
   );
 };
+
 export default Marketplace;

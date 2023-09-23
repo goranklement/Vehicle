@@ -6,7 +6,9 @@ const Ad = (props) => {
       <img src={props.vehicle.img} />
       <h6>{props.vehicle.kilometers} km</h6>
       <h6>{props.vehicle.price} €</h6>
-      <h6>{props.vehicle.email}</h6>
+      <h6>
+        <a href={`mailto:${props.vehicle.email}`}>{props.vehicle.email}</a>
+      </h6>
     </div>
   );
 };

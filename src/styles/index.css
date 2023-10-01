@@ -379,3 +379,18 @@ h5 {
   margin: 10px;
   border-radius: 25px;
 }
+.paginator h6 {
+  position: relative;
+  bottom: 7px;
+  margin: 20px;
+  font-size: 25px;
+  display: inline;
+}
+.paginator i {
+  background-color: #16171f;
+  border-radius: 30px;
+  margin: 10px 8px;
+}
+.paginator i:hover {
+  font-size: 2.5rem !important;
+}

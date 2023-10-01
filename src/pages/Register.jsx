@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./FirebaseConfig";
+import { auth } from "../components/FirebaseConfig";
 import "primeicons/primeicons.css";
 
 const Register = () => {

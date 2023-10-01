@@ -1,10 +1,10 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Profile from "./components/Profile";
-import NavbarLogoff from "./components/NavbarLogoff";
-import Marketplace from "./components/Marketplace";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Profile from "./pages/Profile";
+import NavbarLogoff from "./pages/NavbarLogoff";
+import Marketplace from "./pages/Marketplace";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import React from "react";
 import { AuthContext } from "./components/AuthProvider";
 import { useContext } from "react";
@@ -16,7 +16,7 @@ import "primereact/resources/primereact.min.css";
 
 import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
 
-import Navbar from "./components/Navbar";
+import Navbar from "./pages/Navbar";
 
 function App() {
   const { isAuthenticated } = useContext(AuthContext);

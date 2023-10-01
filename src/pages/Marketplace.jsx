@@ -4,11 +4,11 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { useRef } from "react";
 import axios from "axios";
-import { Paginator } from "primereact/paginator";
-import Ad from "./Ad";
+import Ad from "../components/Ad";
 import makeModelStore from "../common/MakeModelStore";
 import vehicleStore from "../common/VehicleStore";
-import { auth } from "./FirebaseConfig";
+import { auth } from "../components/FirebaseConfig";
+import Paginator from "../components/Paginator";
 
 import { InputNumber } from "primereact/inputnumber";
 
@@ -19,9 +19,9 @@ const Marketplace = () => {
   const [isFilterPressed, setIsFilterPressed] = useState(false);
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [first, setFirst] = useState(0);
-  const [rows, setRows] = useState(3);
+  const [pageNumber, setPageNumber] = useState(1);
   const [minPrice, setMinPrice] = useState("0");
+  const [urlStored, setUrl] = useState("");
   const [maxPrice, setMaxPrice] = useState("0");
   const [minKilometers, setMinKilometers] = useState("0");
   const [maxKilometers, setMaxKilometers] = useState("0");
@@ -29,9 +29,9 @@ const Marketplace = () => {
     name: make.name,
     id: make.id,
   }));
-  const onPageChange = (event) => {
-    setFirst(event.first);
-    setRows(event.rows);
+
+  const handlePageChange = (newPage) => {
+    setPageNumber(newPage);
   };
 
   useEffect(() => {
@@ -44,6 +44,42 @@ const Marketplace = () => {
         setIsLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, [pageNumber, isFilterPressed]);
+
+  const getData = async () => {
+    console.log("getdata");
+    if (!isFilterPressed) {
+      const user = auth.currentUser;
+      const url = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE uid!='${user.uid}' &page=${pageNumber}&rpp=3`;
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        setFilteredVehicles(response.data.item);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      const user = auth.currentUser;
+      try {
+        const response = await axios.get(urlStored, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        setFilteredVehicles(response.data.item);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
 
   const checkCondition = () => {
     return (
@@ -64,6 +100,7 @@ const Marketplace = () => {
 
   const filterVehicles = async (isFilterPressed) => {
     let sortURL = "";
+    setPageNumber(1);
 
     if (!isFilterPressed) {
       if (
@@ -71,31 +108,31 @@ const Marketplace = () => {
         maxPrice > minPrice &&
         maxKilometers > minKilometers
       ) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND price>${minPrice} AND price<${maxPrice} AND make='${selectedOption.name}' AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND price>${minPrice} AND price<${maxPrice} AND make='${selectedOption.name}' AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else if (
         selectedOption !== "" &&
         maxPrice > minPrice &&
         maxKilometers === minKilometers
       ) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE price>${minPrice} AND price<${maxPrice} AND make='${selectedOption.name}' AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE price>${minPrice} AND price<${maxPrice} AND make='${selectedOption.name}' AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else if (
         selectedOption !== "" &&
         maxPrice === minPrice &&
         maxKilometers > minKilometers
       ) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND make='${selectedOption.name}' AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND make='${selectedOption.name}' AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else if (maxPrice > minPrice && maxKilometers > minKilometers) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND price>${minPrice} AND price<${maxPrice}  AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND price>${minPrice} AND price<${maxPrice}  AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else if (maxKilometers > minKilometers && maxPrice === minPrice) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE kilometers>${minKilometers} AND kilometers<${maxKilometers} AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else if (
         selectedOption !== "" &&
         maxPrice === minPrice &&
         maxKilometers === minKilometers
       ) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE make='${selectedOption.name}' AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE make='${selectedOption.name}' AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else if (maxPrice > minPrice && maxKilometers === minKilometers) {
-        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE price>${minPrice} AND price<${maxPrice} AND uid!='${user.uid}'`;
+        sortURL = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE price>${minPrice} AND price<${maxPrice} AND uid!='${user.uid}' &page=${pageNumber}&rpp=2`;
       } else {
         showInfo("Invalid filter values!");
       }
@@ -108,19 +145,22 @@ const Marketplace = () => {
           });
 
           setFilteredVehicles(response.data.item);
-
+          setUrl(sortURL);
           setIsFilterPressed(!isFilterPressed);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
       }
     } else {
+      console.log("prije svih auta");
       setSelectedOption("");
       setMinPrice(0);
       setMaxPrice(0);
+
       setMinKilometers(0);
       setMaxKilometers(0);
       setIsFilterPressed(!isFilterPressed);
+      getData();
     }
   };
 
@@ -198,33 +238,19 @@ const Marketplace = () => {
             )}
 
             {isFilterPressed
-              ? filteredVehicles
-                  .slice(first, first + rows)
-                  .map((vehicle) => <Ad key={vehicle.id} vehicle={vehicle} />)
-              : vehicleStore.vehicles
-                  .filter((vehicle) => vehicle.uid !== user.uid)
-                  .slice(first, first + rows)
-                  .map((vehicle) => <Ad key={vehicle.id} vehicle={vehicle} />)}
+              ? filteredVehicles.map((vehicle) => (
+                  <Ad key={vehicle.id} vehicle={vehicle} />
+                ))
+              : filteredVehicles.map((vehicle) => (
+                  <Ad key={vehicle.id} vehicle={vehicle} />
+                ))}
           </>
         )}
       </div>
       {checkCondition() ? (
         <></>
       ) : (
-        <Paginator
-          className="paginator"
-          first={first}
-          rows={rows}
-          totalRecords={
-            isFilterPressed
-              ? filteredVehicles.length
-              : vehicleStore.vehicles.filter(
-                  (vehicle) => vehicle.uid !== user.uid
-                ).length
-          }
-          rowsPerPageOptions={[3, 6, 9]}
-          onPageChange={onPageChange}
-        />
+        <Paginator page={pageNumber} setPage={handlePageChange} />
       )}
     </>
   );

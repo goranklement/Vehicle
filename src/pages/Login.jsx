@@ -1,13 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { useRef } from "react";
-import { auth } from "./FirebaseConfig";
+import { auth } from "../components/FirebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../components/AuthProvider";
 import { useContext } from "react";
 
 const Login = () => {

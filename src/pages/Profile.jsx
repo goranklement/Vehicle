@@ -1,30 +1,49 @@
 import { Button } from "primereact/button";
-import "../index.css";
-
 import { useState, useEffect } from "react";
 import { useObserver } from "mobx-react";
 import vehicleStore from "../common/VehicleStore";
-import AdModel from "./AdModel";
-import { Paginator } from "primereact/paginator";
-import AddVehicle from "./AddVehicle";
-import { auth } from "./FirebaseConfig";
+import AdModel from "../components/AdModel";
+import Paginator from "../components/Paginator";
+import AddVehicle from "../components/AddVehicle";
+import { auth } from "../components/FirebaseConfig";
 import makeModelStore from "../common/MakeModelStore";
+import axios from "axios";
 const Profile = () => {
-  const [first, setFirst] = useState(0);
   const [isShown, setIsShown] = useState(false);
-  const [rows, setRows] = useState(3);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [filtered, setFiltered] = useState([]);
   const user = auth.currentUser;
+
   useEffect(() => {
+    getData();
     makeModelStore.getMakes();
     makeModelStore.getModels();
     vehicleStore.getFromDatabase();
   }, []);
 
-  const onPageChange = (event) => {
-    setFirst(event.first);
-    setRows(event.rows);
+  useEffect(() => {
+    getData();
+  }, [pageNumber]);
+
+  const handlePageChange = (newPage) => {
+    setPageNumber(newPage);
   };
 
+  const getData = async () => {
+    const user = auth.currentUser;
+    const url = `https://api.baasic.com/beta/vehiclegkl/resources/Vehicle/?searchQuery=WHERE uid='${user.uid}' &page=${pageNumber}&rpp=3`;
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      setFiltered(response.data.item);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const toggleIsShown = () => {
     setIsShown(!isShown);
   };
@@ -34,12 +53,9 @@ const Profile = () => {
         <div className="adContainer">
           {user ? (
             <>
-              {vehicleStore.vehicles
-                .filter((vehicle) => vehicle.uid === user.uid)
-                .slice(first, first + rows)
-                .map((vehicle) => (
-                  <AdModel key={vehicle.id} vehicle={vehicle} />
-                ))}
+              {filtered.map((vehicle) => (
+                <AdModel key={vehicle.id} vehicle={vehicle} />
+              ))}
             </>
           ) : (
             <h5>Loading...</h5>
@@ -48,18 +64,7 @@ const Profile = () => {
 
         {vehicleStore.vehicles.filter((vehicle) => vehicle.uid === user.uid)
           .length > 0 ? (
-          <Paginator
-            className="paginator"
-            first={first}
-            rows={rows}
-            totalRecords={
-              vehicleStore.vehicles.filter(
-                (vehicle) => vehicle.uid === user.uid
-              ).length
-            }
-            rowsPerPageOptions={[3, 6, 9]}
-            onPageChange={onPageChange}
-          />
+          <Paginator page={pageNumber} setPage={handlePageChange} />
         ) : (
           <h5>You don't have any ads</h5>
         )}

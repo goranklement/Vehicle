@@ -1,4 +1,3 @@
-import "../index.css";
 import { useState } from "react";
 import { Button } from "primereact/button";
 import axios from "axios";

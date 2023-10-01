@@ -1,7 +1,7 @@
 import Logo from "../assets/deal.png";
-import NavigationItem from "./NavigationItem";
-import { auth } from "./FirebaseConfig";
-import { AuthContext } from "./AuthProvider";
+import NavigationItem from "../components/NavigationItem";
+import { auth } from "../components/FirebaseConfig";
+import { AuthContext } from "../components/AuthProvider";
 import { useContext } from "react";
 const Navbar = () => {
   const { logout } = useContext(AuthContext);
